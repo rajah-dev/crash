@@ -5,10 +5,22 @@
 // gotta start somewhere ¯\_(ツ)_/¯ 
 // 
 
-#include <iostream>
+#include <string>
+
+#include <SDL2/SDL.h>
+
+#include "include/Game.h"
 
 int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
+
+    Game crash;
+    
+    if( crash.initialize() )
+    {
+        crash.gameLoop();
+    }
+    
+    crash.closeGame();
+    
     return 0;
 }

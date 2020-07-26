@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		C720CC0324CE1FA5004A0488 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C720CC0224CE1FA5004A0488 /* main.cpp */; };
+		C720CC0E24CE1FC5004A0488 /* SDL2_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C720CC0A24CE1FC5004A0488 /* SDL2_mixer.framework */; };
+		C720CC0F24CE1FC5004A0488 /* SDL2_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C720CC0B24CE1FC5004A0488 /* SDL2_ttf.framework */; };
+		C720CC1024CE1FC5004A0488 /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C720CC0C24CE1FC5004A0488 /* SDL2_image.framework */; };
+		C720CC1124CE1FC5004A0488 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C720CC0D24CE1FC5004A0488 /* SDL2.framework */; };
+		C720CC1524CE2053004A0488 /* Game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C720CC1324CE2053004A0488 /* Game.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +30,13 @@
 /* Begin PBXFileReference section */
 		C720CBFF24CE1FA5004A0488 /* crash */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = crash; sourceTree = BUILT_PRODUCTS_DIR; };
 		C720CC0224CE1FA5004A0488 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		C720CC0A24CE1FC5004A0488 /* SDL2_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_mixer.framework; path = ../../../../Library/Frameworks/SDL2_mixer.framework; sourceTree = "<group>"; };
+		C720CC0B24CE1FC5004A0488 /* SDL2_ttf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_ttf.framework; path = ../../../../Library/Frameworks/SDL2_ttf.framework; sourceTree = "<group>"; };
+		C720CC0C24CE1FC5004A0488 /* SDL2_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_image.framework; path = ../../../../Library/Frameworks/SDL2_image.framework; sourceTree = "<group>"; };
+		C720CC0D24CE1FC5004A0488 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
+		C720CC1324CE2053004A0488 /* Game.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Game.cpp; path = include/Game.cpp; sourceTree = "<group>"; };
+		C720CC1424CE2053004A0488 /* Game.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Game.h; path = include/Game.h; sourceTree = "<group>"; };
+		C720CC1624CE22A1004A0488 /* global.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = global.h; path = include/global.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +44,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C720CC0E24CE1FC5004A0488 /* SDL2_mixer.framework in Frameworks */,
+				C720CC0F24CE1FC5004A0488 /* SDL2_ttf.framework in Frameworks */,
+				C720CC1024CE1FC5004A0488 /* SDL2_image.framework in Frameworks */,
+				C720CC1124CE1FC5004A0488 /* SDL2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -43,6 +59,7 @@
 			children = (
 				C720CC0124CE1FA5004A0488 /* crash */,
 				C720CC0024CE1FA5004A0488 /* Products */,
+				C720CC0924CE1FC5004A0488 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,8 +75,22 @@
 			isa = PBXGroup;
 			children = (
 				C720CC0224CE1FA5004A0488 /* main.cpp */,
+				C720CC1324CE2053004A0488 /* Game.cpp */,
+				C720CC1624CE22A1004A0488 /* global.h */,
+				C720CC1424CE2053004A0488 /* Game.h */,
 			);
 			path = crash;
+			sourceTree = "<group>";
+		};
+		C720CC0924CE1FC5004A0488 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C720CC0C24CE1FC5004A0488 /* SDL2_image.framework */,
+				C720CC0A24CE1FC5004A0488 /* SDL2_mixer.framework */,
+				C720CC0B24CE1FC5004A0488 /* SDL2_ttf.framework */,
+				C720CC0D24CE1FC5004A0488 /* SDL2.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -120,6 +151,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C720CC0324CE1FA5004A0488 /* main.cpp in Sources */,
+				C720CC1524CE2053004A0488 /* Game.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -239,6 +271,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -247,6 +283,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
