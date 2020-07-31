@@ -13,6 +13,7 @@
 		C720CC1024CE1FC5004A0488 /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C720CC0C24CE1FC5004A0488 /* SDL2_image.framework */; };
 		C720CC1124CE1FC5004A0488 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C720CC0D24CE1FC5004A0488 /* SDL2.framework */; };
 		C720CC1524CE2053004A0488 /* Game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C720CC1324CE2053004A0488 /* Game.cpp */; };
+		C720CC1924CE2ECF004A0488 /* Box.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C720CC1724CE2ECF004A0488 /* Box.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -37,6 +38,8 @@
 		C720CC1324CE2053004A0488 /* Game.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Game.cpp; path = include/Game.cpp; sourceTree = "<group>"; };
 		C720CC1424CE2053004A0488 /* Game.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Game.h; path = include/Game.h; sourceTree = "<group>"; };
 		C720CC1624CE22A1004A0488 /* global.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = global.h; path = include/global.h; sourceTree = "<group>"; };
+		C720CC1724CE2ECF004A0488 /* Box.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Box.cpp; path = include/Box.cpp; sourceTree = "<group>"; };
+		C720CC1824CE2ECF004A0488 /* Box.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Box.h; path = include/Box.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,8 +78,10 @@
 			isa = PBXGroup;
 			children = (
 				C720CC0224CE1FA5004A0488 /* main.cpp */,
-				C720CC1324CE2053004A0488 /* Game.cpp */,
+				C720CC1724CE2ECF004A0488 /* Box.cpp */,
+				C720CC1824CE2ECF004A0488 /* Box.h */,
 				C720CC1624CE22A1004A0488 /* global.h */,
+				C720CC1324CE2053004A0488 /* Game.cpp */,
 				C720CC1424CE2053004A0488 /* Game.h */,
 			);
 			path = crash;
@@ -150,6 +155,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C720CC1924CE2ECF004A0488 /* Box.cpp in Sources */,
 				C720CC0324CE1FA5004A0488 /* main.cpp in Sources */,
 				C720CC1524CE2053004A0488 /* Game.cpp in Sources */,
 			);

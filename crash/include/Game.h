@@ -8,33 +8,19 @@
 #ifndef Game_h
 #define Game_h
 
+#include "Box.h"
+
 class Game {
 public:
     Game( void );
     
-    bool initialize( void );
-
-    bool loadMedia( void );
+    bool initialize( SDL_Window *&gWindow, SDL_Renderer *&gRenderer );
     
-    void gameLoop( void );
+    void closeGame( SDL_Window *&gWindow, SDL_Renderer *&gRenderer );
     
-    void handleInput( SDL_Event &event );
-    
-    void update( void );
-    
-    void draw( void );
-    
-    void closeMedia( void );
-    
-    void closeGame( void );
-
 private:
-    SDL_Window *gWindow;
-    SDL_Renderer *gRenderer;
     SDL_Color gColor;
     std::string gTitle;
-    
-    bool hasQuit;
 };
 
 #endif /* Game_h */

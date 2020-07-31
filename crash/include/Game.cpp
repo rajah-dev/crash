@@ -14,25 +14,23 @@
 #include <SDL2_mixer/SDL_mixer.h>
 #include <SDL2_ttf/SDL_ttf.h>
 
-//Custom
+//Self
 #include "Game.h"
+
+//Custom
 #include "global.h"
-
-
+#include "Box.h"
 
 Game::Game( void )
 {
-    gWindow = NULL;
-    gRenderer = NULL;
     gColor = { 113, 28, 145, 255 };
     gTitle = WINDOW_TITLE;
-    hasQuit = false;
 }
 
 //Initialize SDL and related subsystems
 //FU: Separate out subsystems
 //FU: Change to SDL_Log instead of printf in the future
-bool Game::initialize( void )
+bool Game::initialize( SDL_Window *&gWindow, SDL_Renderer *&gRenderer )
 {
     bool success = true;
     
@@ -104,7 +102,7 @@ bool Game::initialize( void )
 }
 
 //FU: Separate out subsystems
-void Game::closeGame( void )
+void Game::closeGame( SDL_Window *&gWindow, SDL_Renderer *&gRenderer )
 {
     SDL_DestroyRenderer( gRenderer );
     gRenderer = NULL;
@@ -119,40 +117,5 @@ void Game::closeGame( void )
     SDL_Quit();
 }
 
-void Game::gameLoop( void )
-{
-    SDL_Event event;
 
-    while( !hasQuit )
-    {
-        handleInput( event );
-        update();
-        draw();
-    }
-}
-
-void Game::handleInput( SDL_Event &event )
-{
-    while( SDL_PollEvent( &event ) )
-    {
-        if( event.type == SDL_QUIT )
-        {
-            hasQuit = true;
-        }
-    }
-}
-
-void Game::update( void )
-{
-
-}
-        
-void Game::draw( void )
-{
-    SDL_SetRenderDrawColor( gRenderer, gColor.r, gColor.g, gColor.b, gColor.a );
-    SDL_RenderClear( gRenderer );
-    
-
-    SDL_RenderPresent( gRenderer );
-}
 
