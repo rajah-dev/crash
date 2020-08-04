@@ -7,21 +7,24 @@
 // thanks to javidx9 (better citation needed)
 
 #include <string>
+#include <vector>
+#include <cmath>
+
 
 #include <SDL2/SDL.h>
 
 #include "include/Game.h"
 
-struct dynamicRect {
-    SDL_Rect rect;
-    SDL_FPoint velocity;
-};
+
 
 
 bool pointInRect( SDL_Point &point, SDL_Rect &rect ); //SDL_PointInRect dummy
 bool rectVsRect( SDL_Rect &rectA, SDL_Rect &rectB );
+//calc rayOrigin as float, because it will be a center point
+//rayDir (D) is usually endpoint - orgin
 bool rayVsRect( SDL_Point &rayOrigin, SDL_FPoint &rayDir, SDL_Rect &rect,
                SDL_FPoint &contactPoint, SDL_Point &contactNormal, float &tHitNear);
+
 
 SDL_Point centerPoint( SDL_Rect rect )
 {
@@ -39,8 +42,17 @@ SDL_FPoint centerFPoint( SDL_Rect rect )
     return center;
 }
 
-bool rectVsRect( dynamicRect &dynamic, SDL_Rect &target, SDL_FPoint &contactPoint,
-                SDL_Point &contactNormal, float &collisionTime, float &elapsedTime )
+struct dynamicRect {
+    SDL_Rect rect;
+    SDL_FPoint velocity;
+    SDL_Point getCenter()
+    {
+        return centerPoint( rect );
+    }
+};
+
+bool dynamicRectVsRect( dynamicRect &dynamic, SDL_Rect &target, SDL_FPoint &contactPoint,
+                SDL_Point &contactNormal, float &collisionTime, float elapsedTime )
 {
     //assume rects don't start in collision, so if velocity is 0, just return false
     if( dynamic.velocity.x == 0 && dynamic.velocity.y == 0 )
@@ -55,15 +67,18 @@ bool rectVsRect( dynamicRect &dynamic, SDL_Rect &target, SDL_FPoint &contactPoin
     expandedTarget.w = target.w + dynamic.rect.w;
     expandedTarget.h = target.h + dynamic.rect.h;
     
-    if( rayVsRect( centerPoint( dynamic.rect ), dynamic.velocity, expandedTarget, contactPoint, contactNormal, collisionTime, elapsedTime ) )
+    
+    
+    SDL_Point center = dynamic.getCenter();
+    SDL_FPoint velXtime = { dynamic.velocity.x * elapsedTime, dynamic.velocity.y * elapsedTime };
+    if( rayVsRect( center, velXtime, expandedTarget, contactPoint, contactNormal, collisionTime ) )
     {
-        if( collisionTime <= 1.0f ) //
-        {
-            return true;
-        }
+        return (collisionTime >= 0.0f && collisionTime <= 1.0f );
     }
-
-    return false;
+    else
+    {
+        return false;
+    }
 }
 
 int main(int argc, const char * argv[]) {
@@ -78,23 +93,26 @@ int main(int argc, const char * argv[]) {
         SDL_Event event;
         bool hasQuit = false;
         
-        SDL_Point originPos = { 550, 400 };
-        SDL_Point mousePos = { 0, 0 };
-        
         SDL_FPoint rayDirection = { 0, 0 };
-        SDL_FPoint cPoint = { 0.0, 0.0 };
-        SDL_Point cNormal = { 0, 0 };
-        float time = 0;
+        SDL_FPoint cPoint;
+        SDL_Point cNormal;
+        float time;
         
         SDL_Color gColor = { 0x33, 0x13, 0x5C, 255 };
         SDL_Color obColor = { 0xDE, 0x38, 0xC8, 255 };
         SDL_Color highlight = { 0xFF, 0xD3, 0x00, 255 };
         
-        SDL_Rect obstacle = { 300, 200, 50, 50 };
-        SDL_FRect hit = { cPoint.x, cPoint.y, 5, 5 };
         
-
+        dynamicRect player;
+        player.rect = { 23, 23, 23, 23 };
         
+        std::vector<SDL_Rect> gameRects;
+        
+        gameRects.push_back( { 10, 10, 10, 10 } );
+        gameRects.push_back( { 150, 150, 200, 100 } );
+        
+        Uint32 startTime = SDL_GetTicks();
+        float elapsedTime = 0;
         
         while( !hasQuit )
         {
@@ -104,56 +122,81 @@ int main(int argc, const char * argv[]) {
                 {
                     hasQuit = true;
                 }
-                if( event.type == SDL_MOUSEMOTION )
-                {
-                    mousePos = { event.motion.x, event.motion.y };
-                }
                 if( event.type == SDL_KEYDOWN && event.key.repeat == 0 )
                 {
                     //keysym member = what key was pressed/released
                     switch( event.key.keysym.sym )
                     {
-
+                            case SDLK_w:
+                                rayDirection.y -= 10;
+                                break;
+                            case SDLK_s:
+                                rayDirection.y += 10;
+                                break;
+                            case SDLK_a:
+                                rayDirection.x -= 10;
+                                break;
+                            case SDLK_d:
+                                rayDirection.x += 10;
+                                break;
+                    }
+                }
+                if( event.type == SDL_KEYUP && event.key.repeat == 0 )
+                {
+                    //keysym member = what key was pressed/released
+                    switch( event.key.keysym.sym )
+                    {
+                            case SDLK_w:
+                                rayDirection.y += 10;
+                                break;
+                            case SDLK_s:
+                                rayDirection.y -= 10;
+                                break;
+                            case SDLK_a:
+                                rayDirection.x += 10;
+                                break;
+                            case SDLK_d:
+                                rayDirection.x -= 10;
+                                break;
                     }
                 }
             }
-            obColor = { 255, 255, 255, 255 };
+            startTime = SDL_GetTicks();
+            
+            player.velocity.x += rayDirection.x;
+            player.velocity.y += rayDirection.y;
+            
+            player.rect.x += round(player.velocity.x * elapsedTime);
+            player.rect.y += round(player.velocity.y * elapsedTime);
+
+            if( dynamicRectVsRect( player, gameRects[1], cPoint, cNormal, time, elapsedTime ) )
+            {
+                player.velocity = { 0 , 0 };
+            }
             
             //A ray is P (origin)  and a D(irection vector) * T(ime)
             //Then D (rayDir) = Q (endpoint) - P (origin)
-            rayDirection.x = mousePos.x - originPos.x;
-            rayDirection.y = mousePos.y - originPos.y;
-            hit.x = cPoint.x;
-            hit.y = cPoint.y;
+
         
             //draw
             
             SDL_SetRenderDrawColor( gRenderer, gColor.r, gColor.g, gColor.b, gColor.a );
             SDL_RenderClear( gRenderer );
+
+            SDL_SetRenderDrawColor( gRenderer, highlight.r, obColor.g, obColor.b, obColor.a );
+            SDL_RenderFillRect( gRenderer, &gameRects[1] );
             
             SDL_SetRenderDrawColor( gRenderer, highlight.r, highlight.g, highlight.b, highlight.a );
-            SDL_RenderDrawLine( gRenderer, originPos.x, originPos.y, mousePos.x, mousePos.y);
-            
-            if( rayVsRect(originPos, rayDirection, obstacle, cPoint, cNormal, time) && time <= 1.0f )
-            {
-                SDL_SetRenderDrawColor( gRenderer, obColor.r, obColor.g, obColor.b, obColor.a );
-                SDL_RenderFillRectF( gRenderer, &hit );
-                SDL_RenderDrawLine( gRenderer, cPoint.x, cPoint.y, cPoint.x + cNormal.x*20, cPoint.y + cNormal.y*20 );
-                
-                SDL_SetRenderDrawColor( gRenderer, highlight.r, highlight.g, highlight.b, highlight.a );
-            }
-            else
-            {
-                SDL_SetRenderDrawColor( gRenderer, obColor.r, obColor.g, obColor.b, obColor.a );
-            }
-            SDL_RenderFillRect( gRenderer, &obstacle );
+            SDL_RenderFillRect( gRenderer, &player.rect );
             
 
-
             
-            //SDL_RenderDrawLine( gRenderer, originPos.x, originPos.y, mousePos.x, mousePos.y);
+            SDL_SetRenderDrawColor( gRenderer, 255, 255, 255, 255 );
+            SDL_RenderDrawLine( gRenderer, player.getCenter().x, player.getCenter().y, player.getCenter().x + player.velocity.x, player.getCenter().y + player.velocity.y );
+            
             
             SDL_RenderPresent( gRenderer );
+            elapsedTime = (SDL_GetTicks() - startTime) / 1000.0f;
         }
     }
 
@@ -182,16 +225,21 @@ bool rectVsRect( SDL_Rect &rectA, SDL_Rect &rectB )
 bool rayVsRect( SDL_Point &rayOrigin, SDL_FPoint &rayDir, SDL_Rect &rect,
                SDL_FPoint &contactPoint, SDL_Point &contactNormal, float &tHitNear)
 {
+    contactPoint = { 0,0 };
+    contactNormal = { 0,0 };
+    
+    SDL_FPoint invDir = { 1.0f / rayDir.x, 1.0f/ rayDir.y };
+    
     //Calculate the collision point nearest to the ray origin, based on x, y axis
     //A ray is P (origin)  and a D(irection vector) * T(ime 0 - 1)
     SDL_FPoint tNear = { 0, 0 };
-    tNear.x = ( rect.x - rayOrigin.x ) / rayDir.x;
-    tNear.y = ( rect.y - rayOrigin.y ) / rayDir.y;
+    tNear.x = ( rect.x - rayOrigin.x ) * invDir.x;
+    tNear.y = ( rect.y - rayOrigin.y ) * invDir.y;
     
     //Calculate the collision point furthers from the ray origin, based on x, y axis
     SDL_FPoint tFar = { 0, 0 };
-    tFar.x = ( rect.x + rect.w - rayOrigin.x ) / rayDir.x;
-    tFar.y = ( rect.y + rect.h - rayOrigin.y ) / rayDir.y;
+    tFar.x = ( rect.x + rect.w - rayOrigin.x ) * invDir.x;
+    tFar.y = ( rect.y + rect.h - rayOrigin.y ) * invDir.y;
     
     //if far point is closer than near point, because of origin's perspective relative to rectangle
     //we need to sort them
@@ -215,14 +263,14 @@ bool rayVsRect( SDL_Point &rayOrigin, SDL_FPoint &rayDir, SDL_Rect &rect,
     
     if( tNear.x > tNear.y )
     {
-        if( rayDir.x < 0 )
+        if( invDir.x < 0 )
             contactNormal = { 1, 0 };
         else
             contactNormal = { -1, 0};
     }
     else if ( tNear.x < tNear.y )
     {
-        if( rayDir.y < 0 )
+        if( invDir.y < 0 )
             contactNormal = { 0, 1 };
         else
             contactNormal = { 0, -1};
