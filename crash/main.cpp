@@ -33,7 +33,7 @@ namespace aabb {
 
     bool pointInRect( const SDL_Point &point, const SDL_Rect &target )
     {
-        return ( point.x >= target.x && //Is point right of rect's right
+        return ( point.x >= target.x && //Is point right of rect's left
                 point.y >= target.y && //Is point below rect's top
                 point.x < target.x + target.w && //Is point left of rect's right
                 point.y < target.y + target.h ); //Is point above rect's bottom
@@ -50,8 +50,8 @@ namespace aabb {
     bool rayVsRect( const SDL_Point &rayOrigin, const SDL_FPoint &rayDir, const SDL_Rect &rect,
                    SDL_Point &contactPoint, SDL_Point &contactNormal, float &tHitNear)
     {
-        contactPoint = { 0,0 };
-        contactNormal = { 0,0 };
+        contactPoint = { 0, 0 };
+        contactNormal = { 0, 0 };
         
         
         SDL_FPoint invDir = { 1.0f / rayDir.x, 1.0f / rayDir.y};
@@ -241,6 +241,7 @@ int main(int argc, const char * argv[]) {
                 }
             }
             startTime = SDL_GetTicks();
+            
             //UPDATE
             player.vel.x += rayDirection.x * 200.0f * elapsedTime;
             player.vel.y += rayDirection.y * 200.0f * elapsedTime;
@@ -272,24 +273,28 @@ int main(int argc, const char * argv[]) {
             }
             
 
-            
+            //update player position (int) from velocity (float)
             player.rect.x += round(player.vel.x * elapsedTime);
             player.rect.y += round(player.vel.y * elapsedTime);
             
             
             //DRAW
+            //clear screen
             SDL_SetRenderDrawColor( gRenderer, gColor.r, gColor.g, gColor.b, gColor.a);
             SDL_RenderClear( gRenderer );
             
+            //draw all obstacles
             SDL_SetRenderDrawColor( gRenderer, white.r, white.g, white.b, white.a);
             for( int i = 0; i < obstacles.size(); i++ )
             {
                 SDL_RenderDrawRect( gRenderer, &obstacles[i] );
             }
             
+            //draw player
             SDL_SetRenderDrawColor( gRenderer, highlight.r, highlight.g, highlight.b, highlight.a);
             SDL_RenderFillRect( gRenderer, &player.rect );
             
+            //draw velocity line
             SDL_SetRenderDrawColor( gRenderer, white.r, white.g, white.b, white.a);
             SDL_RenderDrawLine( gRenderer, player.getCenterF().x, player.getCenterF().y, player.getCenterF().x + player.vel.x, player.getCenterF().y + player.vel.y );
             
